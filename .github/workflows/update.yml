@@ -1,0 +1,28 @@
+name: Update Hebei TV Link
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每小时自动运行一次
+  workflow_dispatch:     # 允许手动触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Generate M3U
+        run: python generate_hebtv_m3u.py
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add hebtv.m3u
+          git commit -m "Auto-update Hebei TV link"
+          git push
